@@ -8,10 +8,10 @@ DOTENV=".env"
 
 print "=== Placing $DOTENV file"
 if [ -f "$DOTENV" ]; then
-    print "$DOTENV already exists."
+  print "$DOTENV already exists."
 else
-    print "$DOTENV does not exist. Using .env.example."
-    cp .env.example $DOTENV
+  print "$DOTENV does not exist. Using .env.example."
+  cp .env.example $DOTENV
 fi
 
 source scripts/_env
@@ -28,6 +28,9 @@ cargo sqlx prepare
 
 cd ../../
 cargo run --bin seed
+
+print "=== Installing autocannon"
+npm install
 
 print "=== Installing Node server dependencies"
 cd servers/node-server

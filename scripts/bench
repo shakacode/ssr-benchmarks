@@ -3,8 +3,30 @@
 set -e
 
 source scripts/_env
+source scripts/_print
 
-cargo run --bin bench --release -- $1
+if [[ "$1" != "" ]]; then
+  if [ "$1" -ge 0 ]; then
+    CONNECTIONS="$1"
+  else
+    echo "Number of concurrent connections must be a positive integer."
+    exit 1
+  fi
+else
+  CONNECTIONS="10"
+fi
 
-echo -e "\n"
-echo "✨ Done."
+print "====== Autocannon benchmarks"
+println  "=== Next server:"
+$(npm bin)/autocannon --connections=$CONNECTIONS http://localhost:$NEXT_SERVER_PORT
+
+println "=== Node server:"
+$(npm bin)/autocannon --connections=$CONNECTIONS http://localhost:$NODE_SERVER_PORT
+
+println "=== Rust server:"
+$(npm bin)/autocannon --connections=$CONNECTIONS http://localhost:$RUST_SERVER_PORT;
+
+println "====== Local benchmarks"
+cargo run --bin bench --release -- $CONNECTIONS
+
+println "✨ Done."

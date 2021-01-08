@@ -31,8 +31,8 @@ fn get_number_of_concurrent_reqs() -> usize {
     let args = std::env::args().collect::<Vec<String>>();
 
     match args.as_slice() {
-        [_] => 50,
         [_, n] => n.parse::<usize>().expect("Failed to parse provided argument: make sure you provided a valid number of concurrent requests"),
+        [_] => panic!("Number of concurrent requests is not provided."),
         _ => panic!(
             "Unexpected set of arguments. You can only provide a number of concurrent requests."
         ),
