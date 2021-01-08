@@ -1,0 +1,9 @@
+#!/bin/bash
+
+IFS=$'\n'
+for ENV_VAR in $(cat .env | grep -v "#"); do
+  export $ENV_VAR
+done
+unset IFS
+
+export DATABASE_URL="postgres://$PG_USER:$PG_PASSWORD@$PG_HOST:$PG_PORT/$PG_DATABASE"

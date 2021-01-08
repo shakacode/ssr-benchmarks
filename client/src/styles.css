@@ -1,0 +1,71 @@
+html {
+  min-height: 100%;
+}
+
+html,
+body,
+#app {
+  display: grid;
+  position: relative;
+  grid-template-columns: 600px;
+  grid-template-rows: 1fr;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: max-content 1fr max-content;
+  grid-template-columns: 1fr;
+  grid-row-gap: 10px;
+  margin: 10px 0;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  align-items: center;
+}
+
+.content {
+  display: grid;
+  grid-auto-rows: max-content;
+}
+
+.footer {
+  display: grid;
+}
+
+.h {
+  display: flex;
+  flex-flow: row nowrap;
+  font-family: mono;
+}
+
+.h1 {
+  font-size: 30px;
+  font-weight: 700;
+}
+
+.h2 {
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.posts {
+  display: grid;
+  grid-auto-rows: max-content;
+  grid-row-gap: 18px;
+}
+
+.post {
+  display: grid;
+  grid-template-rows: max-content max-content;
+  grid-row-gap: 5px;
+}
+
+.postContent {
+  display: flex;
+  flex-flow: row nowrap;
+}

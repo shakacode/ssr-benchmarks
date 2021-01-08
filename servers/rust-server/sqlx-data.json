@@ -1,0 +1,33 @@
+{
+  "db": "PostgreSQL",
+  "6148960a0df42f7ebc08d7391e4160fbf10df0225b51ac50d90d25e17d86ef6a": {
+    "query": "SELECT\n    id AS \"id: PostId\",\n    title,\n    content\nFROM posts\n",
+    "describe": {
+      "columns": [
+        {
+          "ordinal": 0,
+          "name": "id: PostId",
+          "type_info": "Uuid"
+        },
+        {
+          "ordinal": 1,
+          "name": "title",
+          "type_info": "Text"
+        },
+        {
+          "ordinal": 2,
+          "name": "content",
+          "type_info": "Text"
+        }
+      ],
+      "parameters": {
+        "Left": []
+      },
+      "nullable": [
+        false,
+        false,
+        false
+      ]
+    }
+  }
+}

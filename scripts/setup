@@ -1,0 +1,66 @@
+#!/bin/bash
+
+set -e
+
+source scripts/_print
+
+DOTENV=".env"
+
+print "=== Placing $DOTENV file"
+if [ -f "$DOTENV" ]; then
+    print "$DOTENV already exists."
+else
+    print "$DOTENV does not exist. Using .env.example."
+    cp .env.example $DOTENV
+fi
+
+source scripts/_env
+
+println "=== Installing ssr js worker"
+cd servers/rust-server
+npm install
+
+println "=== Setting up database"
+sqlx database drop -y
+sqlx database create
+sqlx migrate run
+cargo sqlx prepare
+
+cd ../../
+cargo run --bin seed
+
+print "=== Installing Node server dependencies"
+cd servers/node-server
+npm install
+
+print "=== Installing Next server dependencies"
+cd ../next-server
+npm install
+
+println "=== Installing client dependencies"
+cd ../../client
+npm install
+
+println "=== Building client app for Node server"
+npm run build:node:client
+
+println "=== Building server renderer for Node server"
+npm run build:node:server
+
+println "=== Building client app for Rust server"
+npm run build:rust:client
+
+println "=== Building server renderer for Rust server"
+npm run build:rust:server
+
+println "=== Building app view for Next server"
+npm run build:next
+
+println "=== Building Rust server"
+cd ..
+cargo build --package rust-server --release
+
+println "=== Building Rust benchnmark binary"
+cargo build --bin bench --release
+
+println "✨ Done."

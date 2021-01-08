@@ -1,0 +1,10 @@
+#!/bin/bash
+
+print () {
+  echo "$1"
+}
+
+println () {
+  echo -e "\n"
+  echo "$1"
+}

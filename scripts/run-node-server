@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -e
+
+source scripts/_env
+
+cd servers/node-server
+npm start

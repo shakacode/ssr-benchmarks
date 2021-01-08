@@ -1,0 +1,8 @@
+{
+  "name": "rust-server",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "ssr-rs": "0.0.5"
+  }
+}

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+source scripts/_env
+
+cargo run --bin bench --release -- $1
+
+echo -e "\n"
+echo "✨ Done."
