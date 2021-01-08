@@ -33,9 +33,3 @@ And finally, run benchmarks:
 ```sh
 scripts/bench
 ```
-
-By default, benchmark script executes 10 concurrent connections. But you can pass your number to the script:
-
-```sh
-scripts/bench 25
-```

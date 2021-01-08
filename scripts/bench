@@ -4,12 +4,6 @@ set -e
 
 source scripts/_env
 
-if [[ "$1" != "" ]]; then
-  export CONNECTIONS="$1"
-else
-  export CONNECTIONS="10"
-fi
-
 node ./scripts/bench.js
 
 # cargo run --bin bench --release

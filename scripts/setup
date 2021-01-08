@@ -29,7 +29,7 @@ cargo sqlx prepare
 cd ../../
 cargo run --bin seed
 
-print "=== Installing autocannon"
+print "=== Installing benchnmark tools"
 npm install
 
 print "=== Installing Node server dependencies"
@@ -63,7 +63,7 @@ println "=== Building Rust server"
 cd ..
 cargo build --package rust-server --release
 
-println "=== Building Rust benchnmark binary"
-cargo build --bin bench --release
+# println "=== Building Rust benchnmark binary"
+# cargo build --bin bench --release
 
 println "✨ Done."

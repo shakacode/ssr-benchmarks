@@ -5,7 +5,7 @@ use sqlx::postgres::PgPool;
 async fn main() {
     let pool = pool().await;
 
-    for _ in 1..100 {
+    for _ in 1..env::seed_items() {
         let title = lipsum::lipsum_title();
         let content = lipsum::lipsum_words(rand::thread_rng().gen_range(80..200));
         insert_post(title, content, &pool).await;
@@ -44,6 +44,12 @@ async fn pool() -> PgPool {
 
 mod env {
     use std::env;
+
+    pub fn seed_items() -> usize {
+        let v = env::var("SEED_ITEMS").expect("[env] SEED_ITEMS is not set");
+        v.parse::<usize>()
+            .expect("SEED_ITEMS must be a positive integer")
+    }
 
     pub fn pg_host() -> String {
         env::var("PG_HOST").expect("[env] PG_HOST is not set")
