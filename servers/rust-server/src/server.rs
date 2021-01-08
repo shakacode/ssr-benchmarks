@@ -1,5 +1,5 @@
 use actix_files::Files;
-use actix_web::{guard, web, App, HttpServer};
+use actix_web::{guard, http::ContentEncoding, middleware, web, App, HttpServer};
 
 use crate::{env, gql, pg, ssr};
 
@@ -13,6 +13,7 @@ pub async fn run() -> std::io::Result<()> {
             .data(pg.clone())
             .data(gql.clone())
             .data(ssr.clone())
+            .wrap(middleware::Compress::new(ContentEncoding::Gzip))
             .route("/", web::get().to(ssr::posts::endpoint))
             .service(Files::new("/assets", "./servers/rust-server/assets/"))
             .service(

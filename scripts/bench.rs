@@ -8,36 +8,24 @@ use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() {
-    let concurrent_reqs = get_number_of_concurrent_reqs();
+    let connections = env::connections();
 
     println!(
         "Running total {} requests in groups. {} concurrent requests per group.",
-        TOTAL_REQUESTS, concurrent_reqs
+        TOTAL_REQUESTS, connections
     );
 
-    let next_server_results = run(NextServer::url(), concurrent_reqs).await;
+    let next_server_results = run(NextServer::url(), connections).await;
     interpret("Next server", next_server_results);
 
-    let node_server_results = run(NodeServer::url(), concurrent_reqs).await;
+    let node_server_results = run(NodeServer::url(), connections).await;
     interpret("Node server", node_server_results);
 
-    let rust_server_results = run(RustServer::url(), concurrent_reqs).await;
+    let rust_server_results = run(RustServer::url(), connections).await;
     interpret("Rust server", rust_server_results);
 }
 
 const TOTAL_REQUESTS: usize = 1000;
-
-fn get_number_of_concurrent_reqs() -> usize {
-    let args = std::env::args().collect::<Vec<String>>();
-
-    match args.as_slice() {
-        [_, n] => n.parse::<usize>().expect("Failed to parse provided argument: make sure you provided a valid number of concurrent requests"),
-        [_] => panic!("Number of concurrent requests is not provided."),
-        _ => panic!(
-            "Unexpected set of arguments. You can only provide a number of concurrent requests."
-        ),
-    }
-}
 
 struct RustServer;
 
@@ -63,11 +51,11 @@ impl NextServer {
     }
 }
 
-async fn run(url: String, concurrent_reqs: usize) -> Vec<Result<Duration, ()>> {
+async fn run(url: String, connections: usize) -> Vec<Result<Duration, ()>> {
     let results = Arc::new(Mutex::new(vec![]));
 
     futures::stream::iter(vec![0; TOTAL_REQUESTS])
-        .for_each_concurrent(concurrent_reqs, |_| {
+        .for_each_concurrent(connections, |_| {
             let url = url.as_str();
             let results = results.clone();
             async move {
@@ -82,9 +70,18 @@ async fn run(url: String, concurrent_reqs: usize) -> Vec<Result<Duration, ()>> {
 }
 
 async fn get(url: &str) -> Result<Duration, ()> {
+    let request =
+        reqwest::Client::new()
+            .get(url)
+            .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+            .header("Accept-Encoding", "gzip, deflate")
+            .header("Accept-Language", "en-us")
+            .header("Cookie", "WMF-Last-Access=08-Jan-2021; enwikimwuser-sessionId=041fb3ba99e057d356e5; WMF-Last-Access-Global=08-Jan-2021")
+            .header( "User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Safari/605.1.15");
+
     let start = Instant::now();
 
-    match reqwest::get(url).await {
+    match request.send().await {
         Ok(res) => {
             if res.status().is_success() {
                 Ok(start.elapsed())
@@ -145,5 +142,12 @@ mod env {
 
     pub fn next_server_port() -> String {
         env::var("NEXT_SERVER_PORT").expect("[env] NEXT_SERVER_PORT is not set")
+    }
+
+    pub fn connections() -> usize {
+        let connections = env::var("CONNECTIONS").expect("[env] CONNECTIONS is not set");
+        connections
+            .parse::<usize>()
+            .expect("Number of concurrent connections must be a positive integer")
     }
 }

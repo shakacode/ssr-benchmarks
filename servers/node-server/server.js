@@ -1,6 +1,7 @@
 const express = require("express");
 const body = require("body-parser");
 const cookies = require("cookie-parser");
+const compression = require("compression");
 const http = require("http");
 const ssr = require("./assets/ssr.js");
 
@@ -8,8 +9,8 @@ const app = express();
 
 app.use(body.json());
 app.use(body.urlencoded({ extended: true }));
-
 app.use(cookies());
+app.use(compression());
 
 app.use("/assets", express.static("assets"));
 
