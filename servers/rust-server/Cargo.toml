@@ -13,6 +13,8 @@ graphql-actix-web = { package = "async-graphql-actix-web", version = "2.0.12" }
 sqlx = { version = "0.4.2", default-features = false, features = [ "runtime-actix-rustls", "macros", "postgres", "offline", "uuid" ] }
 serde = "1.0.117"
 serde_json = "1.0.59"
+base64 = "0.13.0"
+blake2 = "0.9.1"
 log = "0.4.11"
 env_logger = "0.8.1"
 ssr = "0.0.5"

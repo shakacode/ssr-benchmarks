@@ -1,7 +1,10 @@
-use actix_web::{web::Data, HttpRequest, HttpResponse};
+use actix_web::{http::header, web::Data, HttpRequest, HttpResponse};
 use ssr::{JsRenderer, Ssr};
 
-use crate::pg::{queries as db, PgPool};
+use crate::{
+    etag,
+    pg::{queries as db, PgPool},
+};
 
 pub async fn endpoint(pg: Data<PgPool>, ssr: Data<Ssr>, req: HttpRequest) -> HttpResponse {
     let uri = req.uri();
@@ -11,7 +14,14 @@ pub async fn endpoint(pg: Data<PgPool>, ssr: Data<Ssr>, req: HttpRequest) -> Htt
         Ok(data) => {
             let data = json!({ "posts": data });
             match ssr.render(uri, &data, JsRenderer::Global).await {
-                Ok(html) => HttpResponse::Ok().body(html),
+                Ok(html) => HttpResponse::Ok()
+                    .content_type("text/html; charset=utf-8")
+                    .header(header::ETAG, etag::new(&html))
+                    .header(
+                        header::CACHE_CONTROL,
+                        "private, no-cache, no-store, max-age=0, must-revalidate",
+                    )
+                    .body(html),
                 Err(error) => {
                     error!("{}", error);
                     HttpResponse::InternalServerError().finish()

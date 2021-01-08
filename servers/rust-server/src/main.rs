@@ -5,6 +5,7 @@ extern crate serde_json;
 extern crate log;
 
 mod env;
+mod etag;
 mod gql;
 mod models;
 mod pg;

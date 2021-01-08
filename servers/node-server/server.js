@@ -14,12 +14,13 @@ app.use(compression());
 
 app.use("/assets", express.static("assets"));
 
+app.set("etag", "strong");
+
 app.use(
   "/",
   (req, res, next) => {
-    res.header("Cache-Control", "private, no-cache, no-store, must-revalidate");
-    res.header("Expires", "-1");
-    res.header("Pragma", "no-cache");
+    res.header("Cache-Control", "private, no-cache, no-store, max-age=0, must-revalidate");
+    res.header("Content-Type", "text/html; charset=utf-8");
     next();
   },
   async (req, res, next) => {
